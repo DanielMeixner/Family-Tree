@@ -1,0 +1,22 @@
+{
+  "name": "family-tree-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A SPA to visualize a family tree from a CSV file.",
+  "scripts": {
+    "start": "npx serve src"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.6.0",
+    "d3": "^7.0.0",
+    "dagre": "^0.8.5",
+    "papaparse": "^5.4.1",
+    "react": "^18.0.0",
+    "react-d3-tree": "^3.6.6",
+    "react-dom": "^18.0.0",
+    "reactflow": "^11.11.4"
+  },
+  "devDependencies": {
+    "vite": "^7.0.4"
+  }
+}
