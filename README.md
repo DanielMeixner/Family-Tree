@@ -2,6 +2,10 @@
 
 This is a single page application (SPA) that allows you to upload a CSV file containing family data and visualizes the family tree in your browser. No server-side dependencies are required.
 
+## Live Demo
+
+[View the Family Tree App on GitHub Pages](https://danielmeixner.github.io/FamilyTree/)
+
 ## Features
 - Upload a CSV file with family data
 - Visualize the family tree interactively
@@ -21,7 +25,7 @@ Jane,Doe,f,1955-01-01,,2,,
 Alice,Doe,f,1980-01-01,,3,1,2
 ```
 
-## How to Run
+## How to Run Locally
 
 1. **Install dependencies** (only needed once):
    ```sh
@@ -37,5 +41,5 @@ Alice,Doe,f,1980-01-01,,3,1,2
 
 ---
 
-This project uses React, D3.js for visualization, and PapaParse for CSV parsing.
+This project uses React, ReactFlow, D3, and PapaParse for visualization and CSV parsing.
 

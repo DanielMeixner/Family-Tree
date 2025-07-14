@@ -4,7 +4,8 @@
   "private": true,
   "description": "A SPA to visualize a family tree from a CSV file.",
   "scripts": {
-    "start": "npx serve src"
+    "start": "vite",
+    "build": "vite build --base=/FamilyTree/"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.6.0",
