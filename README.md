@@ -4,7 +4,7 @@ This is a single page application (SPA) that allows you to upload a CSV file con
 
 ## Live Demo
 
-[View the Family Tree App on GitHub Pages](https://danielmeixner.github.io/FamilyTree/)
+[View the Family Tree App on GitHub Pages](https://danielmeixner.github.io/Family-Tree/)
 
 ## Features
 - Upload a CSV file with family data

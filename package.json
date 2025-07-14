@@ -5,7 +5,7 @@
   "description": "A SPA to visualize a family tree from a CSV file.",
   "scripts": {
     "start": "vite",
-    "build": "vite build --base=/FamilyTree/"
+    "build": "vite build --base=/Family-Tree/"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.6.0",
@@ -19,5 +19,6 @@
   },
   "devDependencies": {
     "vite": "^7.0.4"
-  }
+  },
+  "homepage": "https://danielmeixner.github.io/Family-Tree/"
 }

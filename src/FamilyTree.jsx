@@ -56,7 +56,7 @@ function buildGraph(data) {
   return { nodes: layoutedNodes, edges };
 }
 
-export default function FamilyTree({ data }) {
+export default function Family-Tree({ data }) {
   const { nodes, edges } = useMemo(() => buildGraph(data), [data]);
   if (!data.length) return null;
   return (

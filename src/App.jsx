@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Papa from "papaparse";
-import FamilyTree from "./FamilyTree";
+import Family-Tree from "./Family-Tree";
 
 
 const cardStyle = {
@@ -149,7 +149,7 @@ export default function App() {
       <div style={{ flex: 1, width: "100vw", height: "100vh", marginTop: 80, zIndex: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
         {familyData.length > 0 && (
           <div style={{ width: "90vw", height: "80vh", borderRadius: 18, overflow: "hidden", boxShadow: "0 2px 16px 0 rgba(60,60,60,0.08)", background: "#fff", pointerEvents: "auto", border: "1px solid #e5e5e7" }}>
-            <FamilyTree data={familyData} />
+            <Family-Tree data={familyData} />
           </div>
         )}
       </div>
