@@ -110,9 +110,9 @@ function buildGraph(data, settings) {
           strokeWidth: 3,
           strokeLinecap: 'round'
         },
-        type: settings.edgeStyle || 'smoothstep',
+        type: settings.edgeStyle || 'bezier',
         pathOptions: {
-          curvature: settings.curveIntensity || 0.8
+          curvature: settings.curveIntensity || 1.2
         }
       });
     }
@@ -130,9 +130,9 @@ function buildGraph(data, settings) {
           strokeWidth: 3,
           strokeLinecap: 'round'
         },
-        type: settings.edgeStyle || 'smoothstep',
+        type: settings.edgeStyle || 'bezier',
         pathOptions: {
-          curvature: settings.curveIntensity || 0.8
+          curvature: settings.curveIntensity || 1.2
         }
       });
     }
@@ -154,8 +154,8 @@ export default function FamilyTree({ data, settings = {} }) {
     showBirthIcons: true,
     showDeceasedBanner: true,
     fontSize: 14,
-    edgeStyle: 'simplebezier',
-    curveIntensity: 0.8
+    edgeStyle: 'bezier',
+    curveIntensity: 1.2
   };
   
   const mergedSettings = { ...defaultSettings, ...settings };

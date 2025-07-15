@@ -150,8 +150,8 @@ const SettingsPanel = ({ settings, onSettingsChange }) => {
                 fontSize: '14px'
               }}
             >
+              <option value="bezier">Bezier (Very Organic)</option>
               <option value="simplebezier">Simple Bezier (Organic)</option>
-              <option value="bezier">Bezier (Curved)</option>
               <option value="smoothstep">Smooth Step</option>
               <option value="straight">Straight</option>
               <option value="step">Step</option>
@@ -167,12 +167,12 @@ const SettingsPanel = ({ settings, onSettingsChange }) => {
               min="0.1"
               max="1.5"
               step="0.1"
-              value={settings.curveIntensity || 0.8}
+              value={settings.curveIntensity || 1.2}
               onChange={(e) => handleSettingChange('curveIntensity', parseFloat(e.target.value))}
               style={{ width: '100%', marginBottom: '4px' }}
             />
             <div style={{ fontSize: '12px', color: '#666', textAlign: 'center' }}>
-              {settings.curveIntensity || 0.8}
+              {settings.curveIntensity || 1.2}
             </div>
           </div>
           

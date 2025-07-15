@@ -96,7 +96,8 @@ export default function App() {
     showBirthIcons: true,
     showDeceasedBanner: true,
     fontSize: 14,
-    edgeStyle: 'smoothstep'
+    edgeStyle: 'simplebezier',
+    curveIntensity: 1.2
   });
 
   const handleFileUpload = (e) => {
