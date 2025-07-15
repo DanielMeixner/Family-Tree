@@ -97,7 +97,7 @@ export default function App() {
     showDeceasedBanner: true,
     fontSize: 14,
     edgeStyle: 'simplebezier',
-    curveIntensity: 1.2
+    curveIntensity: 1.5
   });
 
   const handleFileUpload = (e) => {

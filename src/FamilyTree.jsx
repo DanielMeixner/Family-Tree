@@ -108,11 +108,13 @@ function buildGraph(data, settings) {
         style: {
           stroke: isFather ? settings.colors.male : (isMotherRelationship ? settings.colors.female : settings.colors.neutral),
           strokeWidth: 3,
-          strokeLinecap: 'round'
+          strokeLinecap: 'round',
+          strokeLinejoin: 'round',
+          filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))'
         },
         type: settings.edgeStyle || 'bezier',
         pathOptions: {
-          curvature: settings.curveIntensity || 1.2
+          curvature: settings.curveIntensity || 1.5
         }
       });
     }
@@ -128,11 +130,13 @@ function buildGraph(data, settings) {
         style: {
           stroke: isFather ? settings.colors.male : (isMotherRelationship ? settings.colors.female : settings.colors.neutral),
           strokeWidth: 3,
-          strokeLinecap: 'round'
+          strokeLinecap: 'round',
+          strokeLinejoin: 'round',
+          filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))'
         },
         type: settings.edgeStyle || 'bezier',
         pathOptions: {
-          curvature: settings.curveIntensity || 1.2
+          curvature: settings.curveIntensity || 1.5
         }
       });
     }
@@ -155,7 +159,7 @@ export default function FamilyTree({ data, settings = {} }) {
     showDeceasedBanner: true,
     fontSize: 14,
     edgeStyle: 'bezier',
-    curveIntensity: 1.2
+    curveIntensity: 1.5
   };
   
   const mergedSettings = { ...defaultSettings, ...settings };

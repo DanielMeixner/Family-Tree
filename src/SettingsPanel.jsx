@@ -160,19 +160,19 @@ const SettingsPanel = ({ settings, onSettingsChange }) => {
           
           <div style={{ marginBottom: '16px' }}>
             <label style={{ display: 'block', marginBottom: '8px', fontSize: '14px', fontWeight: '500' }}>
-              Curve Intensity:
+              Curve Intensity (Higher = More Organic):
             </label>
             <input
               type="range"
               min="0.1"
-              max="1.5"
+              max="2.5"
               step="0.1"
-              value={settings.curveIntensity || 1.2}
+              value={settings.curveIntensity || 1.5}
               onChange={(e) => handleSettingChange('curveIntensity', parseFloat(e.target.value))}
               style={{ width: '100%', marginBottom: '4px' }}
             />
             <div style={{ fontSize: '12px', color: '#666', textAlign: 'center' }}>
-              {settings.curveIntensity || 1.2}
+              {settings.curveIntensity || 1.5} (Try 2.0+ for very organic curves)
             </div>
           </div>
           
