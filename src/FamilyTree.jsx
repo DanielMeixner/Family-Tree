@@ -7,6 +7,85 @@ import CustomNode from "./CustomNode";
 const nodeWidth = 220;
 const nodeHeight = 140;
 
+// Minimum spacing between nodes to prevent overlaps
+const minHorizontalSpacing = 30;
+const minVerticalSpacing = 20;
+
+function detectCollisions(nodes) {
+  const collisions = [];
+  
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const node1 = nodes[i];
+      const node2 = nodes[j];
+      
+      const dx = Math.abs(node1.position.x - node2.position.x);
+      const dy = Math.abs(node1.position.y - node2.position.y);
+      
+      const minDistanceX = nodeWidth + minHorizontalSpacing;
+      const minDistanceY = nodeHeight + minVerticalSpacing;
+      
+      if (dx < minDistanceX && dy < minDistanceY) {
+        collisions.push([i, j]);
+      }
+    }
+  }
+  
+  return collisions;
+}
+
+function resolveCollisions(nodes) {
+  const resolvedNodes = [...nodes];
+  let maxIterations = 50;
+  let iterations = 0;
+  
+  while (iterations < maxIterations) {
+    const collisions = detectCollisions(resolvedNodes);
+    
+    if (collisions.length === 0) break;
+    
+    // Group nodes by their year-based Y position to maintain generational layout
+    const nodesByYear = {};
+    resolvedNodes.forEach((node, index) => {
+      const yearKey = Math.round(node.position.y / 50) * 50; // Group by 50px increments
+      if (!nodesByYear[yearKey]) {
+        nodesByYear[yearKey] = [];
+      }
+      nodesByYear[yearKey].push({ node, index });
+    });
+    
+    // Resolve collisions within each year group
+    Object.values(nodesByYear).forEach(yearGroup => {
+      if (yearGroup.length > 1) {
+        // Sort by X position
+        yearGroup.sort((a, b) => a.node.position.x - b.node.position.x);
+        
+        // Adjust X positions to prevent overlaps
+        let currentX = yearGroup[0].node.position.x;
+        for (let i = 1; i < yearGroup.length; i++) {
+          const prevNode = yearGroup[i - 1];
+          const currentNode = yearGroup[i];
+          const minRequiredX = prevNode.node.position.x + nodeWidth + minHorizontalSpacing;
+          
+          if (currentNode.node.position.x < minRequiredX) {
+            resolvedNodes[currentNode.index] = {
+              ...currentNode.node,
+              position: {
+                ...currentNode.node.position,
+                x: minRequiredX
+              }
+            };
+          }
+        }
+      }
+    });
+    
+    iterations++;
+  }
+  
+  return resolvedNodes;
+}
+
 function getLayoutedElements(nodes, edges, direction = "TB") {
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -24,7 +103,7 @@ function getLayoutedElements(nodes, edges, direction = "TB") {
   // Calculate year-based Y positions
   const yearBasedPositions = calculateYearBasedPositions(nodes);
 
-  return nodes.map((node) => {
+  const layoutedNodes = nodes.map((node) => {
     const { x, y } = dagreGraph.node(node.id);
     const yearBasedY = yearBasedPositions[node.id];
     
@@ -38,6 +117,11 @@ function getLayoutedElements(nodes, edges, direction = "TB") {
       sourcePosition: direction === "TB" ? "bottom" : "right",
     };
   });
+
+  // Resolve any overlapping nodes
+  const resolvedNodes = resolveCollisions(layoutedNodes);
+  
+  return resolvedNodes;
 }
 
 function calculateYearBasedPositions(nodes) {
