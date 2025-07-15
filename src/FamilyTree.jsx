@@ -21,15 +21,56 @@ function getLayoutedElements(nodes, edges, direction = "TB") {
 
   dagre.layout(dagreGraph);
 
+  // Calculate year-based Y positions
+  const yearBasedPositions = calculateYearBasedPositions(nodes);
+
   return nodes.map((node) => {
     const { x, y } = dagreGraph.node(node.id);
+    const yearBasedY = yearBasedPositions[node.id];
+    
     return {
       ...node,
-      position: { x, y },
+      position: { 
+        x, 
+        y: yearBasedY !== undefined ? yearBasedY : y 
+      },
       targetPosition: direction === "TB" ? "top" : "left",
       sourcePosition: direction === "TB" ? "bottom" : "right",
     };
   });
+}
+
+function calculateYearBasedPositions(nodes) {
+  const positions = {};
+  const pixelsPerYear = 50;
+  
+  // Extract birth years from nodes
+  const birthYears = [];
+  nodes.forEach(node => {
+    const dob = node.data.dob;
+    if (dob && dob.trim() !== '') {
+      const year = parseInt(dob.split('-')[0], 10);
+      if (!isNaN(year)) {
+        birthYears.push(year);
+      }
+    }
+  });
+  
+  // Find the earliest birth year as reference point
+  const earliestYear = birthYears.length > 0 ? Math.min(...birthYears) : 1900;
+  
+  // Calculate Y positions based on birth years
+  nodes.forEach(node => {
+    const dob = node.data.dob;
+    if (dob && dob.trim() !== '') {
+      const year = parseInt(dob.split('-')[0], 10);
+      if (!isNaN(year)) {
+        positions[node.id] = (year - earliestYear) * pixelsPerYear;
+      }
+    }
+  });
+  
+  return positions;
 }
 
 function buildGraph(data, settings) {
