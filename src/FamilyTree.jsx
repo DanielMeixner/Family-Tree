@@ -146,7 +146,7 @@ export default function FamilyTree({ data, settings = {} }) {
     showBirthIcons: true,
     showDeceasedBanner: true,
     fontSize: 14,
-    edgeStyle: 'smoothstep'
+    edgeStyle: 'bezier'
   };
   
   const mergedSettings = { ...defaultSettings, ...settings };

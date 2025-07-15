@@ -150,10 +150,10 @@ const SettingsPanel = ({ settings, onSettingsChange }) => {
                 fontSize: '14px'
               }}
             >
+              <option value="bezier">Bezier (Curved)</option>
               <option value="smoothstep">Smooth Step</option>
               <option value="straight">Straight</option>
               <option value="step">Step</option>
-              <option value="bezier">Bezier</option>
             </select>
           </div>
           
