@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Papa from "papaparse";
 import FamilyTree from "./FamilyTree";
+import SettingsPanel from "./SettingsPanel";
 
 
 const cardStyle = {
@@ -84,6 +85,19 @@ const preStyle = {
 export default function App() {
   const [familyData, setFamilyData] = useState([]);
   const [error, setError] = useState("");
+  const [settings, setSettings] = useState({
+    colorPalette: 'default',
+    colors: {
+      male: '#2196F3',
+      female: '#E91E63',
+      neutral: '#9E9E9E'
+    },
+    showDeathIcons: true,
+    showBirthIcons: true,
+    showDeceasedBanner: true,
+    fontSize: 14,
+    edgeStyle: 'smoothstep'
+  });
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
@@ -147,9 +161,10 @@ export default function App() {
         </div>
       </div>
       <div style={{ flex: 1, width: "100vw", height: "100vh", marginTop: 80, zIndex: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <SettingsPanel settings={settings} onSettingsChange={setSettings} />
         {familyData.length > 0 && (
           <div style={{ width: "90vw", height: "80vh", borderRadius: 18, overflow: "hidden", boxShadow: "0 2px 16px 0 rgba(60,60,60,0.08)", background: "#fff", pointerEvents: "auto", border: "1px solid #e5e5e7" }}>
-            <FamilyTree data={familyData} />
+            <FamilyTree data={familyData} settings={settings} />
           </div>
         )}
       </div>

@@ -2,9 +2,10 @@ import React, { useMemo } from "react";
 import ReactFlow, { Background, Controls, MiniMap } from "reactflow";
 import "reactflow/dist/style.css";
 import dagre from "dagre";
+import CustomNode from "./CustomNode";
 
-const nodeWidth = 180;
-const nodeHeight = 60;
+const nodeWidth = 220;
+const nodeHeight = 140;
 
 function getLayoutedElements(nodes, edges, direction = "TB") {
   const dagreGraph = new dagre.graphlib.Graph();
@@ -31,38 +32,119 @@ function getLayoutedElements(nodes, edges, direction = "TB") {
   });
 }
 
-function buildGraph(data) {
+function buildGraph(data, settings) {
+  // Create a map for quick lookup
+  const personMap = new Map();
+  data.forEach(person => {
+    personMap.set(person.id, person);
+  });
+
   const nodes = data.map((person) => ({
     id: person.id,
     data: {
-      label: `${person.name} ${person.familyname}`,
+      name: person.name,
+      familyname: person.familyname,
       gender: person.gender,
       dob: person.dob,
       dod: person.dod,
+      image: person.image // Support for future image field
     },
-    type: "default",
+    type: "custom",
     position: { x: 0, y: 0 },
   }));
+  
   const edges = [];
   data.forEach((person) => {
     if (person.parent1) {
-      edges.push({ id: `${person.parent1}->${person.id}`, source: person.parent1, target: person.id });
+      const parent1 = personMap.get(person.parent1);
+      const isFather = parent1?.gender?.toLowerCase() === 'm';
+      const isMotherRelationship = parent1?.gender?.toLowerCase() === 'f';
+      
+      edges.push({ 
+        id: `${person.parent1}->${person.id}`, 
+        source: person.parent1, 
+        target: person.id,
+        style: {
+          stroke: isFather ? settings.colors.male : (isMotherRelationship ? settings.colors.female : settings.colors.neutral),
+          strokeWidth: 3
+        },
+        type: settings.edgeStyle || 'smoothstep'
+      });
     }
     if (person.parent2) {
-      edges.push({ id: `${person.parent2}->${person.id}`, source: person.parent2, target: person.id });
+      const parent2 = personMap.get(person.parent2);
+      const isFather = parent2?.gender?.toLowerCase() === 'm';
+      const isMotherRelationship = parent2?.gender?.toLowerCase() === 'f';
+      
+      edges.push({ 
+        id: `${person.parent2}->${person.id}`, 
+        source: person.parent2, 
+        target: person.id,
+        style: {
+          stroke: isFather ? settings.colors.male : (isMotherRelationship ? settings.colors.female : settings.colors.neutral),
+          strokeWidth: 3
+        },
+        type: settings.edgeStyle || 'smoothstep'
+      });
     }
   });
+  
   const layoutedNodes = getLayoutedElements(nodes, edges);
   return { nodes: layoutedNodes, edges };
 }
 
-export default function FamilyTree({ data }) {
-  const { nodes, edges } = useMemo(() => buildGraph(data), [data]);
+export default function FamilyTree({ data, settings = {} }) {
+  // Default settings
+  const defaultSettings = {
+    colors: {
+      male: '#2196F3',
+      female: '#E91E63',
+      neutral: '#9E9E9E'
+    },
+    showDeathIcons: true,
+    showBirthIcons: true,
+    showDeceasedBanner: true,
+    fontSize: 14,
+    edgeStyle: 'smoothstep'
+  };
+  
+  const mergedSettings = { ...defaultSettings, ...settings };
+  
+  const { nodes, edges } = useMemo(() => buildGraph(data, mergedSettings), [data, mergedSettings]);
+  
+  // Create a custom node component that receives settings
+  const CustomNodeWithSettings = (props) => (
+    <CustomNode {...props} settings={mergedSettings} />
+  );
+  
+  // Define custom node types
+  const nodeTypes = {
+    custom: CustomNodeWithSettings
+  };
+  
   if (!data.length) return null;
+  
   return (
     <div style={{ width: "100%", height: "600px", background: "#f9f9f9" }}>
-      <ReactFlow nodes={nodes} edges={edges} fitView>
-        <MiniMap />
+      <ReactFlow 
+        nodes={nodes} 
+        edges={edges} 
+        nodeTypes={nodeTypes}
+        fitView
+        fitViewOptions={{ padding: 0.1 }}
+        minZoom={0.1}
+        maxZoom={2}
+      >
+        <MiniMap 
+          nodeColor={(node) => {
+            const gender = node.data.gender?.toLowerCase();
+            switch (gender) {
+              case 'm': return mergedSettings.colors.male;
+              case 'f': return mergedSettings.colors.female;
+              default: return mergedSettings.colors.neutral;
+            }
+          }}
+        />
         <Controls />
         <Background gap={16} />
       </ReactFlow>
