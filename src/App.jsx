@@ -3,28 +3,47 @@ import Papa from "papaparse";
 import FamilyTree from "./FamilyTree";
 import SettingsPanel from "./SettingsPanel";
 
-// Default family data - 20-person family tree
+// Default family data - 26-person family tree (no inbreeding)
 const defaultFamilyData = [
+  // First generation (founders)
   { name: "Robert", familyname: "Johnson", gender: "m", dob: "1925-03-15", dod: "2010-08-20", id: "1", parent1: "", parent2: "" },
   { name: "Mary", familyname: "Wilson", gender: "f", dob: "1928-07-22", dod: "2015-12-10", id: "2", parent1: "", parent2: "" },
+  
+  // Second generation (Robert & Mary's children)
   { name: "James", familyname: "Johnson", gender: "m", dob: "1950-05-10", dod: "", id: "3", parent1: "1", parent2: "2" },
-  { name: "Susan", familyname: "Davis", gender: "f", dob: "1952-09-18", dod: "", id: "4", parent1: "", parent2: "" },
   { name: "Linda", familyname: "Johnson", gender: "f", dob: "1953-01-30", dod: "", id: "5", parent1: "1", parent2: "2" },
-  { name: "Michael", familyname: "Brown", gender: "m", dob: "1951-11-05", dod: "", id: "6", parent1: "", parent2: "" },
   { name: "David", familyname: "Johnson", gender: "m", dob: "1955-04-12", dod: "", id: "7", parent1: "1", parent2: "2" },
+  
+  // Spouses (unrelated individuals who married into the family)
+  { name: "Susan", familyname: "Davis", gender: "f", dob: "1952-09-18", dod: "", id: "4", parent1: "", parent2: "" },
+  { name: "Michael", familyname: "Brown", gender: "m", dob: "1951-11-05", dod: "", id: "6", parent1: "", parent2: "" },
   { name: "Patricia", familyname: "Miller", gender: "f", dob: "1957-08-25", dod: "", id: "8", parent1: "", parent2: "" },
+  
+  // Third generation (cousins - children of James/Susan, Linda/Michael, David/Patricia)
   { name: "Jennifer", familyname: "Johnson", gender: "f", dob: "1975-03-08", dod: "", id: "9", parent1: "3", parent2: "4" },
   { name: "Christopher", familyname: "Johnson", gender: "m", dob: "1977-06-14", dod: "", id: "10", parent1: "3", parent2: "4" },
   { name: "Matthew", familyname: "Brown", gender: "m", dob: "1978-02-20", dod: "", id: "11", parent1: "5", parent2: "6" },
   { name: "Amanda", familyname: "Brown", gender: "f", dob: "1980-10-03", dod: "", id: "12", parent1: "5", parent2: "6" },
   { name: "Joshua", familyname: "Johnson", gender: "m", dob: "1982-12-17", dod: "", id: "13", parent1: "7", parent2: "8" },
   { name: "Sarah", familyname: "Johnson", gender: "f", dob: "1985-04-30", dod: "", id: "14", parent1: "7", parent2: "8" },
-  { name: "Emily", familyname: "Johnson", gender: "f", dob: "2000-07-22", dod: "", id: "15", parent1: "9", parent2: "", },
-  { name: "Daniel", familyname: "Johnson", gender: "m", dob: "2002-11-15", dod: "", id: "16", parent1: "10", parent2: "" },
-  { name: "Sophia", familyname: "Brown", gender: "f", dob: "2005-01-08", dod: "", id: "17", parent1: "11", parent2: "" },
-  { name: "Alexander", familyname: "Brown", gender: "m", dob: "2007-05-12", dod: "", id: "18", parent1: "12", parent2: "" },
-  { name: "Olivia", familyname: "Johnson", gender: "f", dob: "2010-09-03", dod: "", id: "19", parent1: "13", parent2: "" },
-  { name: "Lucas", familyname: "Johnson", gender: "m", dob: "2012-03-25", dod: "", id: "20", parent1: "14", parent2: "" }
+  
+  // Spouses for third generation (unrelated individuals to avoid inbreeding)
+  { name: "Ryan", familyname: "Thompson", gender: "m", dob: "1973-11-20", dod: "", id: "21", parent1: "", parent2: "" },
+  { name: "Nicole", familyname: "Garcia", gender: "f", dob: "1976-04-15", dod: "", id: "22", parent1: "", parent2: "" },
+  { name: "Kevin", familyname: "Rodriguez", gender: "m", dob: "1978-08-30", dod: "", id: "23", parent1: "", parent2: "" },
+  { name: "Rachel", familyname: "Martinez", gender: "f", dob: "1983-02-12", dod: "", id: "24", parent1: "", parent2: "" },
+  
+  // Additional spouses for variety (avoiding reuse)
+  { name: "Ashley", familyname: "Williams", gender: "f", dob: "1981-06-10", dod: "", id: "25", parent1: "", parent2: "" },
+  { name: "Brandon", familyname: "Taylor", gender: "m", dob: "1984-12-05", dod: "", id: "26", parent1: "", parent2: "" },
+  
+  // Fourth generation (children with non-related parents, no cousin marriages)
+  { name: "Emily", familyname: "Johnson", gender: "f", dob: "2000-07-22", dod: "", id: "15", parent1: "9", parent2: "21" },
+  { name: "Daniel", familyname: "Johnson", gender: "m", dob: "2002-11-15", dod: "", id: "16", parent1: "10", parent2: "22" },
+  { name: "Sophia", familyname: "Brown", gender: "f", dob: "2005-01-08", dod: "", id: "17", parent1: "11", parent2: "23" },
+  { name: "Alexander", familyname: "Brown", gender: "m", dob: "2007-05-12", dod: "", id: "18", parent1: "12", parent2: "24" },
+  { name: "Olivia", familyname: "Johnson", gender: "f", dob: "2010-09-03", dod: "", id: "19", parent1: "13", parent2: "25" },
+  { name: "Lucas", familyname: "Johnson", gender: "m", dob: "2012-03-25", dod: "", id: "20", parent1: "14", parent2: "26" }
 ];
 
 
