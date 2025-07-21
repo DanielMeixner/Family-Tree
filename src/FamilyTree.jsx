@@ -179,13 +179,13 @@ export default function FamilyTree({ data, settings = {} }) {
   if (!data.length) return null;
   
   return (
-    <div style={{ width: "100%", height: "600px", background: "#f9f9f9" }}>
+    <div style={{ width: "100%", height: "100vh", background: "#f9f9f9" }}>
       <ReactFlow 
         nodes={nodes} 
         edges={edges} 
         nodeTypes={nodeTypes}
         fitView
-        fitViewOptions={{ padding: 0.1 }}
+        fitViewOptions={{ padding: 0.2, minZoom: 0.3, maxZoom: 1 }}
         minZoom={0.1}
         maxZoom={2}
       >
