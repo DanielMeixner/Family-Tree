@@ -3,6 +3,49 @@ import Papa from "papaparse";
 import FamilyTree from "./FamilyTree";
 import SettingsPanel from "./SettingsPanel";
 
+// Default family data - 26-person family tree (no inbreeding)
+const defaultFamilyData = [
+  // First generation (founders)
+  { name: "Robert", familyname: "Johnson", gender: "m", dob: "1925-03-15", dod: "2010-08-20", id: "1", parent1: "", parent2: "" },
+  { name: "Mary", familyname: "Wilson", gender: "f", dob: "1928-07-22", dod: "2015-12-10", id: "2", parent1: "", parent2: "" },
+  
+  // Second generation (Robert & Mary's children)
+  { name: "James", familyname: "Johnson", gender: "m", dob: "1950-05-10", dod: "", id: "3", parent1: "1", parent2: "2" },
+  { name: "Linda", familyname: "Johnson", gender: "f", dob: "1953-01-30", dod: "", id: "5", parent1: "1", parent2: "2" },
+  { name: "David", familyname: "Johnson", gender: "m", dob: "1955-04-12", dod: "", id: "7", parent1: "1", parent2: "2" },
+  
+  // Spouses (unrelated individuals who married into the family)
+  { name: "Susan", familyname: "Davis", gender: "f", dob: "1952-09-18", dod: "", id: "4", parent1: "", parent2: "" },
+  { name: "Michael", familyname: "Brown", gender: "m", dob: "1951-11-05", dod: "", id: "6", parent1: "", parent2: "" },
+  { name: "Patricia", familyname: "Miller", gender: "f", dob: "1957-08-25", dod: "", id: "8", parent1: "", parent2: "" },
+  
+  // Third generation (cousins - children of James/Susan, Linda/Michael, David/Patricia)
+  { name: "Jennifer", familyname: "Johnson", gender: "f", dob: "1975-03-08", dod: "", id: "9", parent1: "3", parent2: "4" },
+  { name: "Christopher", familyname: "Johnson", gender: "m", dob: "1977-06-14", dod: "", id: "10", parent1: "3", parent2: "4" },
+  { name: "Matthew", familyname: "Brown", gender: "m", dob: "1978-02-20", dod: "", id: "11", parent1: "5", parent2: "6" },
+  { name: "Amanda", familyname: "Brown", gender: "f", dob: "1980-10-03", dod: "", id: "12", parent1: "5", parent2: "6" },
+  { name: "Joshua", familyname: "Johnson", gender: "m", dob: "1982-12-17", dod: "", id: "13", parent1: "7", parent2: "8" },
+  { name: "Sarah", familyname: "Johnson", gender: "f", dob: "1985-04-30", dod: "", id: "14", parent1: "7", parent2: "8" },
+  
+  // Spouses for third generation (unrelated individuals to avoid inbreeding)
+  { name: "Ryan", familyname: "Thompson", gender: "m", dob: "1973-11-20", dod: "", id: "21", parent1: "", parent2: "" },
+  { name: "Nicole", familyname: "Garcia", gender: "f", dob: "1976-04-15", dod: "", id: "22", parent1: "", parent2: "" },
+  { name: "Kevin", familyname: "Rodriguez", gender: "m", dob: "1978-08-30", dod: "", id: "23", parent1: "", parent2: "" },
+  { name: "Rachel", familyname: "Martinez", gender: "f", dob: "1983-02-12", dod: "", id: "24", parent1: "", parent2: "" },
+  
+  // Additional spouses for variety (avoiding reuse)
+  { name: "Ashley", familyname: "Williams", gender: "f", dob: "1981-06-10", dod: "", id: "25", parent1: "", parent2: "" },
+  { name: "Brandon", familyname: "Taylor", gender: "m", dob: "1984-12-05", dod: "", id: "26", parent1: "", parent2: "" },
+  
+  // Fourth generation (children with non-related parents, no cousin marriages)
+  { name: "Emily", familyname: "Johnson", gender: "f", dob: "2000-07-22", dod: "", id: "15", parent1: "9", parent2: "21" },
+  { name: "Daniel", familyname: "Johnson", gender: "m", dob: "2002-11-15", dod: "", id: "16", parent1: "10", parent2: "22" },
+  { name: "Sophia", familyname: "Brown", gender: "f", dob: "2005-01-08", dod: "", id: "17", parent1: "11", parent2: "23" },
+  { name: "Alexander", familyname: "Brown", gender: "m", dob: "2007-05-12", dod: "", id: "18", parent1: "12", parent2: "24" },
+  { name: "Olivia", familyname: "Johnson", gender: "f", dob: "2010-09-03", dod: "", id: "19", parent1: "13", parent2: "25" },
+  { name: "Lucas", familyname: "Johnson", gender: "m", dob: "2012-03-25", dod: "", id: "20", parent1: "14", parent2: "26" }
+];
+
 
 const cardStyle = {
   width: "100vw",
@@ -83,8 +126,9 @@ const preStyle = {
 };
 
 export default function App() {
-  const [familyData, setFamilyData] = useState([]);
+  const [familyData, setFamilyData] = useState(defaultFamilyData);
   const [error, setError] = useState("");
+  const [isControlsOpen, setIsControlsOpen] = useState(true);
   const [settings, setSettings] = useState({
     colorPalette: 'default',
     colors: {
@@ -141,33 +185,137 @@ export default function App() {
         top: 0,
         left: 0,
         zIndex: 0,
-        display: "flex",
-        flexDirection: "column",
         fontFamily: "Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
       }}
     >
-      <div style={cardStyle}>
-        <div style={headingStyle}>Family Tree App</div>
-        <div style={subheadingStyle}>Upload a CSV file to visualize your family tree</div>
-        <input
-          type="file"
-          accept=".csv"
-          onChange={handleFileUpload}
-          style={inputStyle}
-        />
-        {error && <div style={errorStyle}>{error}</div>}
-        <div style={infoStyle}>
-          <h3 style={{ margin: "0 0 8px 0", fontWeight: 600, fontSize: 14, color: "#222" }}>CSV Format</h3>
-          <pre style={preStyle}>Name, Familyname, gender (m,f,o), dob, dod, id, parent1-id, parent2-id</pre>
-        </div>
+      {/* Full-page family tree */}
+      <div style={{ width: "100vw", height: "100vh" }}>
+        <FamilyTree data={familyData} settings={settings} />
       </div>
-      <div style={{ flex: 1, width: "100vw", height: "100vh", marginTop: 80, zIndex: 2, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <SettingsPanel settings={settings} onSettingsChange={setSettings} />
-        {familyData.length > 0 && (
-          <div style={{ width: "90vw", height: "80vh", borderRadius: 18, overflow: "hidden", boxShadow: "0 2px 16px 0 rgba(60,60,60,0.08)", background: "#fff", pointerEvents: "auto", border: "1px solid #e5e5e7" }}>
-            <FamilyTree data={familyData} settings={settings} />
+
+      {/* Control overlay */}
+      <div
+        style={{
+          position: "fixed",
+          top: 20,
+          left: 20,
+          zIndex: 100,
+          background: "rgba(255, 255, 255, 0.95)",
+          borderRadius: 12,
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
+          backdropFilter: "blur(10px)",
+          border: "1px solid rgba(255, 255, 255, 0.2)",
+          maxWidth: "350px",
+          transition: "all 0.3s ease"
+        }}
+      >
+        {/* Header with toggle button */}
+        <div
+          style={{
+            padding: "12px 16px",
+            borderBottom: isControlsOpen ? "1px solid #e5e5e7" : "none",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            cursor: "pointer"
+          }}
+          onClick={() => setIsControlsOpen(!isControlsOpen)}
+        >
+          <div style={{ fontWeight: 600, fontSize: 16, color: "#222" }}>
+            Family Tree Controls
+          </div>
+          <div style={{ 
+            fontSize: 18, 
+            color: "#666",
+            transform: isControlsOpen ? "rotate(180deg)" : "rotate(0deg)",
+            transition: "transform 0.3s ease"
+          }}>
+            ▼
+          </div>
+        </div>
+
+        {/* Collapsible content */}
+        {isControlsOpen && (
+          <div style={{ padding: "16px" }}>
+            <div style={{ marginBottom: "16px" }}>
+              <div style={{ fontWeight: 600, fontSize: 14, color: "#222", marginBottom: "8px" }}>
+                Load Custom Family Tree
+              </div>
+              <input
+                type="file"
+                accept=".csv"
+                onChange={handleFileUpload}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: "8px 12px",
+                  borderRadius: 6,
+                  border: "1.5px solid #ddd",
+                  background: "#f9f9f9",
+                  fontSize: 14,
+                  outline: "none"
+                }}
+              />
+              {error && (
+                <div style={{
+                  color: "#b00020",
+                  background: "#fff0f0",
+                  borderRadius: 6,
+                  padding: "8px 12px",
+                  marginTop: "8px",
+                  fontSize: 13,
+                  border: "1px solid #ffd6d6"
+                }}>
+                  {error}
+                </div>
+              )}
+            </div>
+
+            <div style={{ marginBottom: "16px" }}>
+              <div style={{ fontWeight: 600, fontSize: 14, color: "#222", marginBottom: "8px" }}>
+                CSV Format
+              </div>
+              <div style={{
+                background: "#f7f7f7",
+                borderRadius: 6,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontFamily: "Monaco, 'Fira Mono', 'Consolas', monospace",
+                color: "#666",
+                border: "1px solid #e5e5e7"
+              }}>
+                Name, Familyname, gender (m,f,o), dob, dod, id, parent1-id, parent2-id
+              </div>
+            </div>
+
+            <div style={{ marginBottom: "8px" }}>
+              <button
+                onClick={() => setFamilyData(defaultFamilyData)}
+                style={{
+                  width: "100%",
+                  padding: "8px 12px",
+                  background: "#2196F3",
+                  color: "white",
+                  border: "none",
+                  borderRadius: 6,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  cursor: "pointer",
+                  transition: "background 0.2s ease"
+                }}
+                onMouseOver={(e) => e.target.style.background = "#1976D2"}
+                onMouseOut={(e) => e.target.style.background = "#2196F3"}
+              >
+                Reset to Default Family Tree
+              </button>
+            </div>
           </div>
         )}
+      </div>
+
+      {/* Settings panel */}
+      <div style={{ position: "fixed", top: 20, right: 20, zIndex: 100 }}>
+        <SettingsPanel settings={settings} onSettingsChange={setSettings} />
       </div>
     </div>
   );
